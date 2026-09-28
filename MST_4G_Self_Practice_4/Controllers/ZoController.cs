@@ -34,4 +34,23 @@ public class ZoController(IZoService zoService) : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpPut("update")]
+    public async Task<ActionResult<ReadZoDto>>UpdateZo([FromBody] UpdateZoDto updateZoDto)
+    {
+        var result = await zoService.UpdateZoAsync(updateZoDto);
+
+        try
+        {
+            if(result == null)
+            {
+                return NotFound($"ZoNo record '{updateZoDto.ZoNo}' is not found.");
+            }
+            return Ok(result);
+        }
+        catch(ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
