@@ -1,0 +1,6 @@
+@MST_4G_Self_Practice_4_HostAddress = http://localhost:5082
+
+GET {{MST_4G_Self_Practice_4_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
