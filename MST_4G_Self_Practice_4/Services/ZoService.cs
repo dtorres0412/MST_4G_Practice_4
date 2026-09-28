@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using MST_4G_Self_Practice_4.Data;
 using MST_4G_Self_Practice_4.Dtos;
@@ -48,5 +49,28 @@ public class ZoService(AppDbContext context) : IZoService
             ZoNo = newZo.ZoNo,
             ZoName = newZo.ZoName
         };
+    }
+
+    public async Task<ReadZoDto>UpdateZoAsync(UpdateZoDto updateZoDto)
+    {
+            var existingZo = await context.Zo
+            .FirstOrDefaultAsync(z => z.ZoId == updateZoDto.ZoId);
+
+            if(existingZo == null)
+            {
+                return null;
+            }
+
+            existingZo.ZoNo = updateZoDto.ZoNo.Trim();
+            existingZo.ZoName = updateZoDto.ZoName.Trim();
+
+            await context.SaveChangesAsync();
+
+            return new ReadZoDto
+            {
+                ZoId = existingZo.ZoId,
+                ZoNo = existingZo.ZoNo,
+                ZoName = existingZo.ZoName
+            };
     }
 }
