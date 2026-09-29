@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MST_4G_Self_Practice_4.Data;
 using MST_4G_Self_Practice_4.Dtos;
 using MST_4G_Self_Practice_4.Models;
+using MST_4G_Self_Practice_4.Extensions;
 
 namespace MST_4G_Self_Practice_4.Services;
 
@@ -10,6 +11,8 @@ public class ZoService(AppDbContext context) : IZoService
 {
     public async Task<ReadZoDto?>GetByZoNoAsync(string zoNo)
     {
+
+        Validations.ValidateBusinessRules((zoNo, 4, allowSpaces: false));
         return await context.Zo
             .AsNoTracking()
             .Where(z => z.ZoNo == zoNo.Trim())
@@ -23,6 +26,11 @@ public class ZoService(AppDbContext context) : IZoService
 
     public async Task<ReadZoDto>CreateZoAsync(CreateZoDto createZoDto)
     {
+
+        Validations.ValidateBusinessRules(
+            (createZoDto.ZoNo,4, allowSpaces: false),
+            (createZoDto.ZoName,50, allowSpaces: false)
+        );
         string zoNo = createZoDto.ZoNo.Trim();
         string zoName = createZoDto.ZoName.Trim();
 
@@ -53,6 +61,10 @@ public class ZoService(AppDbContext context) : IZoService
 
     public async Task<ReadZoDto>UpdateZoAsync(UpdateZoDto updateZoDto)
     {
+        Validations.ValidateBusinessRules(
+            (updateZoDto.ZoNo,4, allowSpaces: false),
+            (updateZoDto.ZoName,50, allowSpaces: false)
+        );
             var existingZo = await context.Zo
             .FirstOrDefaultAsync(z => z.ZoId == updateZoDto.ZoId);
 
