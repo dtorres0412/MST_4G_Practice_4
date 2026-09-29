@@ -53,4 +53,16 @@ public class ZoController(IZoService zoService) : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpDelete("{zoId:Int}")]
+    public async Task<IActionResult>DeleteZo(int zoId)
+    {
+        var isDeleted = await zoService.DeleteZoAsync(zoId);
+        if (!isDeleted)
+        {
+            return NotFound($"ZoId {zoId} record not found");
+        }
+
+        return NoContent();
+    }
 }
