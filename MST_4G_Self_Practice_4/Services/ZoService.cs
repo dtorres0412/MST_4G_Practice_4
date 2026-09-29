@@ -73,4 +73,19 @@ public class ZoService(AppDbContext context) : IZoService
                 ZoName = existingZo.ZoName
             };
     }
+
+    public async Task<bool>DeleteZoAsync(int zoId)
+    {
+        var zoRecord = await context.Zo.FindAsync(zoId);
+
+        if(zoRecord == null)
+        {
+            return false;
+        }
+
+        context.Zo.Remove(zoRecord);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
 }

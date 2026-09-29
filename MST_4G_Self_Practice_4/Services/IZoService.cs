@@ -7,4 +7,5 @@ public interface IZoService
     Task<ReadZoDto>CreateZoAsync(CreateZoDto createZoDto);
     Task<ReadZoDto>GetByZoNoAsync(string ZoNo);
     Task<ReadZoDto>UpdateZoAsync(UpdateZoDto updateZoDto);
+    Task<bool>DeleteZoAsync(int zoId);
 }
