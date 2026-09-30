@@ -29,7 +29,7 @@ public class ZoService(AppDbContext context) : IZoService
 
         Validations.ValidateBusinessRules(
             (createZoDto.ZoNo,4, allowSpaces: false),
-            (createZoDto.ZoName,50, allowSpaces: false)
+            (createZoDto.ZoName,50, allowSpaces: true)
         );
         string zoNo = createZoDto.ZoNo.Trim();
         string zoName = createZoDto.ZoName.Trim();
@@ -63,7 +63,7 @@ public class ZoService(AppDbContext context) : IZoService
     {
         Validations.ValidateBusinessRules(
             (updateZoDto.ZoNo,4, allowSpaces: false),
-            (updateZoDto.ZoName,50, allowSpaces: false)
+            (updateZoDto.ZoName,50, allowSpaces: true)
         );
             var existingZo = await context.Zo
             .FirstOrDefaultAsync(z => z.ZoId == updateZoDto.ZoId);
