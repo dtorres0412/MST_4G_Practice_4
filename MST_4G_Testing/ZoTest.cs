@@ -49,6 +49,13 @@ public class ZoTest : IDisposable
         yield return new object[] { "," };
     }
 
+    public static IEnumerable<object[]> GetExceededZoNo()
+    {
+        yield return new object[] {"123456789"};
+        yield return new object[] {"51281"};
+        yield return new object[] {"51231231"};
+    }
+
     // 1. Set-up
     public ZoTest()
     {
@@ -187,5 +194,56 @@ public class ZoTest : IDisposable
 
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _service.CreateZoAsync(invalidDto));
         Assert.Contains("Special symbols are not accepted", exception.Message);
+    }
+
+    // [Fact]
+    // public async Task GetByZoNoAsync_WhenZoNoExceedsMaxLength_ThrowsMaxLengthErrorMessage()
+    // {
+    //     var readZoDto = new ReadZoDto
+    //     {
+    //         ZoNo = "123456789"
+    //     };
+
+    //     var exception = await Assert.ThrowsAsync<ArgumentException>(() => _service.GetByZoNoAsync(readZoDto.ZoNo));
+    //     Assert.Contains("The input exceeds on the maxlength of 4", exception.Message);
+    // }
+
+    [Theory]
+    [MemberData(nameof(GetExceededZoNo))]
+    public async Task GetByZoNoAsync_WhenZoNoExceedsMaxLength_ThrowsMaxLengthErrorMessage(string zoNo)
+    {
+        var readZoDto = new ReadZoDto
+        {
+            ZoNo = zoNo
+        };
+
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _service.GetByZoNoAsync(readZoDto.ZoNo));
+        Assert.Contains("The input exceeds on the maxlength of 4", exception.Message);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetExceededZoNo))]
+    public async Task CreateZoAsync_WhenZoNoExceedsMaxLength_ThrowsMaxLengthErrorMessage(string zoNo)
+    {
+        var createZoDto = new CreateZoDto
+        {
+            ZoNo = zoNo
+        };
+
+       var exception = await Assert.ThrowsAsync<ArgumentException>(() => _service.CreateZoAsync(createZoDto));
+       Assert.Contains("The input exceeds on the maxlength of 4", exception.Message);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetExceededZoNo))]
+    public async Task UpdateZoAsync_WhenZoNoExceedsMaxLength_ThrowsMaxLengthErrorMessage(string zoNo)
+    {
+        var updateZoDto = new UpdateZoDto
+        {
+            ZoNo = zoNo
+        };
+
+       var exception = await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateZoAsync(updateZoDto));
+       Assert.Contains("The input exceeds on the maxlength of 4", exception.Message);
     }
 }
