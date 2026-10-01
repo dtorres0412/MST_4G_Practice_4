@@ -56,6 +56,26 @@ public class ZoTest : IDisposable
         yield return new object[] {"51231231"};
     }
 
+    public static IEnumerable<object[]> GetExistedZoIds()
+    {
+        yield return new object[] { 1 };
+        yield return new object[] { 2 };
+        yield return new object[] { 3 };
+        yield return new object[] { 4 };
+        yield return new object[] { 5 };
+        yield return new object[] { 6 };
+    }
+
+    public static IEnumerable<object[]> GetNonExistedZoIds()
+    {
+        yield return new object[] { 21 };
+        yield return new object[] { 32 };
+        yield return new object[] { 45 };
+        yield return new object[] { 55 };
+        yield return new object[] { 67 };
+        yield return new object[] { 79 };
+    }
+
     // 1. Set-up
     public ZoTest()
     {
@@ -245,5 +265,53 @@ public class ZoTest : IDisposable
 
        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _service.UpdateZoAsync(updateZoDto));
        Assert.Contains("The input exceeds on the maxlength of 4", exception.Message);
+    }
+
+    // [Fact]
+    // public async Task DeleteZoAsync_WhenZoIdExists_DeletesAndReturnsTrue()
+    // {
+    //     int existingZoId = 1;
+
+    //     var result = await _service.DeleteZoAsync(existingZoId);
+
+    //     Assert.True(result);
+
+    //     var deletedRecord = await _context.Zo.FindAsync(existingZoId);
+    //     Assert.Null(deletedRecord);
+    // }
+
+    // [Fact]
+    // public async Task DeleteZoAsync_WhenZoIdDoesNotExist_ReturnsFalse()
+    // {
+    //     int nonExistedZoId = 2141;
+
+    //     var result = await _service.DeleteZoAsync(nonExistedZoId);
+
+    //     Assert.False(result);
+    // }
+
+    [Theory]
+    [MemberData(nameof(GetExistedZoIds))]
+    public async Task DeleteZoAsync_WhenZoIdExists_DeletesAndReturnsTrue(int zoId)
+    {
+        int existingZoId = zoId;
+
+        var result = await _service.DeleteZoAsync(existingZoId);
+
+        Assert.True(result);
+
+        var deletedRecord = await _context.Zo.FindAsync(existingZoId);
+        Assert.Null(deletedRecord);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetNonExistedZoIds))]
+    public async Task DeleteZoAsync_WhenZoIdDoesNotExist_ReturnsFalse(int zoId)
+    {
+        int nonExistedZoId = zoId;
+
+        var result = await _service.DeleteZoAsync(nonExistedZoId);
+
+        Assert.False(result);
     }
 }
